@@ -82,17 +82,17 @@ bool backspace_optimized(char* s, char* t) {
 bool backspace_optimized2(std::string s, std::string t) {
     int i = s.length() - 1;
     int j = t.length() - 1;
-    while (i >= 0 && j >= 0) {
-        if (s[i] == '#' || t[j] == '#') {
+    while (i >= 0 || j >= 0) {
+        if ((i >= 0 && s[i] == '#') || (j >= 0 && t[j] == '#')) {
             int count = 0;
-            while (s[i] == '#') {
+            while (i >= 0 && s[i] == '#') {
                 count++;
                 i--;
             }
             i -= count;
 
             count = 0;
-            while (t[j] == '#') {
+            while (j >= 0 && t[j] == '#') {
                 count++;
                 j--;
             }
@@ -111,5 +111,5 @@ bool backspace_optimized2(std::string s, std::string t) {
 int main() {
     // printf("%d\n", backspace_naive("axy##d#bc#", "abc#"));
     printf("%d\n", backspace_optimized2(std::string("axy##d#bc#"), std::string("abc#")));
-
+    printf("%d\n", backspace_optimized2(std::string("ab##"), std::string("c#d#")));
 }
