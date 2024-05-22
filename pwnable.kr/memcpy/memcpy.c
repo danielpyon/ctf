@@ -23,7 +23,9 @@ char* fast_memcpy(char* dest, const char* src, size_t len){
 	size_t i;
 	// 64-byte block fast copy
 	if(len >= 64){
-		i = len / 64;
+		i = len / 64; // len = 64*3+32, then i = 3
+		// this is equivalent to len %= 64
+		// only keep lower bits
 		len &= (64-1);
 		while(i-- > 0){
 			__asm__ __volatile__ (
@@ -98,24 +100,26 @@ int main(void){
 	// run experiment
 	for(i=0; i<10; i++){
 		size = sizes[i];
-		printf("experiment %d : memcpy with buffer size %d\n", i+1, size);
+		// printf("experiment %d : memcpy with buffer size %d\n", i+1, size);
 		dest = malloc( size );
+		printf("%d ", (int)dest);
 
 		memcpy(cache1, cache2, 0x4000);		// to eliminate cache effect
 		t1 = rdtsc();
 		slow_memcpy(dest, src, size);		// byte-to-byte memcpy
 		t2 = rdtsc();
-		printf("ellapsed CPU cycles for slow_memcpy : %llu\n", t2-t1);
+		// printf("ellapsed CPU cycles for slow_memcpy : %llu\n", t2-t1);
 
 		memcpy(cache1, cache2, 0x4000);		// to eliminate cache effect
 		t1 = rdtsc();
 		fast_memcpy(dest, src, size);		// block-to-block memcpy
 		t2 = rdtsc();
-		printf("ellapsed CPU cycles for fast_memcpy : %llu\n", t2-t1);
-		printf("\n");
+		// printf("ellapsed CPU cycles for fast_memcpy : %llu\n", t2-t1);
+		// printf("\n");
 	}
+	puts("");
 
-	printf("thanks for helping my experiment!\n");
-	printf("flag : ----- erased in this source code -----\n");
+	// printf("thanks for helping my experiment!\n");
+	// printf("flag : ----- erased in this source code -----\n");
 	return 0;
 }
